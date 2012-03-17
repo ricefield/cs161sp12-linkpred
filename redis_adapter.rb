@@ -7,9 +7,16 @@ require 'redis'
 
 class RedisAdapter
 
-  def initialize(file_name)
-    @input = file_name
-    @snapshot = file_name.split(".").first
+  def initialize(file_name1, file_name2 = nil)
+    @input = file_name1
+    @snapshot = file_name1.split(".").first if file_name1
+
+    # TODO: determine if this is necessary
+    # NOTE: following 2 variables are currently unused
+    # I added them for later when we want to analyze our predictions
+    # across snapshots
+    @input2 = file_name2
+    @snapshot2 = file_name2.split(".").first if file_name2
   end
 
   def connect
