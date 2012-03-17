@@ -41,7 +41,7 @@ class RedisAdapter
       else type == '1'
         links.each { |i| add_fan_to_set(uid, i) }
       end
-      add_user_to_set(uid)
+      add_user(uid)
     end
     puts "Finished reading input."
     puts "Finished migration from #{@input} to redis server."
@@ -68,20 +68,44 @@ class RedisAdapter
   # == Definition ==
   # Adds the specified uid to a cumulative set of all uid's in the
   # given snapshot
-  def add_user_to_set(uid)
+  def add_user(uid)
     @redis.sadd "#{@snapshot}:users", uid
   end
 
   # == Definition ==
-  # Returns an array of the members in the specified set
-  def set_members(set)
-    @redis.smembers set if @redis
+  # Returns the number of users in the snapshot
+  def num_users
+    @redis.scard "#{@snapshot}:users" if @redis
   end
 
   # == Definition ==
-  # Returns the size of the specified set
-  def set_size(set)
-    @redis.scard set if @redis
+  # Returns an array of the users in the snapshot
+  def get_users
+    @redis.smembers "#{@snapshot}:users" if @redis
+  end
+
+  # == Definition ==
+  # Returns the number of interests of a given user
+  def num_interests(uid)
+    @redis.scard "#{@snapshot}:#{uid}:interests" if @redis
+  end
+
+  # == Definition ==
+  # Returns an array of the interests of a given user
+  def get_interests(uid)
+    @redis.smembers "#{@snapshot}:#{uid}:interests" if @redis
+  end
+
+  # == Definition ==
+  # Returns the number of fans of a given user
+  def num_fans(uid)
+    @redis.scard "#{@snapshot}:#{uid}:fans" if @redis
+  end
+
+  # == Definition ==
+  # Returns an array of the fans of a given user
+  def get_fans(uid)
+    @redis.smembers "#{@snapshot}:#{uid}:interests" if @redis
   end
 
   # == Definition ==
@@ -112,9 +136,9 @@ migrator.migrate
 puts "\n================================="
 puts "============ SUMMARY ============"
 puts "================================="
-puts "\nSize of users set: #{migrator.set_size("test-graph-2011-07-04:users")}"
+puts "\nSize of users set: #{migrator.num_users}"
 puts "Members in users set:"
-users = migrator.set_members("test-graph-2011-07-04:users")
+users = migrator.get_users
 puts users.inspect
 
 puts "\n================================="
@@ -123,10 +147,10 @@ puts "=================================\n"
 puts ""
 users.each do |uid|
   puts "User #{uid}:"
-  puts "Size of interests set:  #{migrator.set_size("test-graph-2011-07-04:#{uid}:interests")}"
-  puts "Members in interests set: #{migrator.set_members("test-graph-2011-07-04:#{uid}:interests").inspect}"
-  puts "Size of fans set:  #{migrator.set_size("test-graph-2011-07-04:#{uid}:fans")}"
-  puts "Members in fans set: #{migrator.set_members("test-graph-2011-07-04:#{uid}:fans").inspect}"
+  puts "Size of interests set:  #{migrator.num_interests(uid)}"
+  puts "Members in interests set: #{migrator.get_interests(uid).inspect}"
+  puts "Size of fans set:  #{migrator.num_fans(uid)}"
+  puts "Members in fans set: #{migrator.get_fans(uid).inspect}"
   puts "\n==============================="
   puts ""
 end
