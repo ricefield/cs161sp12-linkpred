@@ -53,7 +53,6 @@ class RedisAdapter
   # @param uid a given user
   # @param interest_uid the uid of a person added by the given user
   def add_interest_to_set(uid, interest_uid)
-    puts "AKJSDFAKLDJF INTEREST #{interest_uid}"
     @redis.sadd "#{@snapshot}:#{uid}:interests", interest_uid
   end
 
@@ -84,6 +83,25 @@ class RedisAdapter
   def set_size(set)
     @redis.scard set if @redis
   end
+
+  # == Definition ==
+  # Returns an array of the shared interests of uid1 and uid2
+  def shared_interests(uid1, uid2)
+    @redis.sinter "#{@snapshot}:#{uid1}:interests", "#{@snapshot}:#{uid2}:interests"
+  end
+
+  # == Definition ==
+  # Returns an array of the combined interests of uid1 and uid2
+  # Note: not sure if this is useful/needed
+  def combined_interests(uid1, uid2)
+    @redis.sunion "#{@snapshot}:#{uid1}:interests", "#{@snapshot}:#{uid2}:interests"
+  end
+  
+  # == Definition ==
+  # Returns an array of the mutual friends of uid
+  def mutual_friends(uid)
+    @redis.sinter "#{@snapshot}:#{uid}:interests", "#{@snapshot}:#{uid}:fans"
+  end
 end
 
 
@@ -112,3 +130,9 @@ users.each do |uid|
   puts "\n==============================="
   puts ""
 end
+
+
+# Skeleton code for what Brian could use
+#puts migrator.shared_interests(users[0], users[1]).inspect
+#puts migrator.combined_interests(users[0], users[1]).inspect
+#puts migrator.mutual_friends(users[0]).inspect
