@@ -133,6 +133,14 @@ class RedisAdapter
   def mutual_friends(uid)
     @redis.sinter "#{@snapshot}:#{uid}:interests", "#{@snapshot}:#{uid}:fans"
   end
+
+  # == Definition ==
+  # Returns an array of the shared mutual friends of uid1 and uid2
+  def shared_mutual_friends(uid1, uid2)
+    # Get the mutual friends for both users, and then intersection
+    # of those sets represents the shared mutual friends
+    mutual_friends(uid1) & mutual_friends(uid2)
+  end
 end
 
 
@@ -167,3 +175,4 @@ end
 #puts migrator.shared_interests(users[0], users[1]).inspect
 #puts migrator.combined_interests(users[0], users[1]).inspect
 #puts migrator.mutual_friends(users[0]).inspect
+#puts migrator.shared_mutual_friends(users[0], users[1]).inspect # should be 0
