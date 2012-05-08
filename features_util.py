@@ -67,30 +67,32 @@ class Feature_Extractor:
 
         
     """
-    Returns a list of tuples of test edges
+    Returns a list of tuples (a,b) containing only follows
+    (so a->b but not b->a)
     """
     def get_follow_only_edges(self):
         out = []
-        all_users = toList(self.get_users())
+        all_users = list(self.get_users())
         for user in all_users:
             interests = self.get_user_interests(user)
             fans = self.get_user_fans(user)
-            people = toList(interests.difference(fans))
+            people = list(interests.difference(fans))
             for person in people:
                 if person in all_users:
                     out.append((user, person))
         return out
-
-
-"""
-Extracts the values of a set into a list
-"""
-def toList(set):
-    output = []
-    while True:
-        try:
-            val = set.pop()
-            output.append(val)
-        except KeyError:
-            break
-    return output
+    
+    """
+    Returns a list of results (+1/-1) for the list of tuples (a,b) indicating
+    whether b followed back a
+    """
+    def get_results(self, edges):
+        result = []
+        all_users = list(self.get_users())
+        for (p1, p2) in edges:
+            if p1 in all_users and p2 in all_users and p2 in list(self.get_user_fans(p1)):
+                result.append(1)
+            else:
+                result.append(-1)
+        return result
+            
