@@ -69,15 +69,16 @@ class Feature_Extractor:
     """
     Returns a list of tuples of test edges
     """
-    def get_test_edges(self):
+    def get_follow_only_edges(self):
         out = []
         all_users = toList(self.get_users())
         for user in all_users:
             interests = self.get_user_interests(user)
-            fans = self.get_user_interests(user)
+            fans = self.get_user_fans(user)
             people = toList(interests.difference(fans))
             for person in people:
-                out.append((user, person))
+                if person in all_users:
+                    out.append((user, person))
         return out
 
 
