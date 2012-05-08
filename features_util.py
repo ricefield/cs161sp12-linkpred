@@ -83,7 +83,7 @@ class Feature_Extractor:
         return out
     
     """
-    Returns a list of results (+1/-1) for the list of tuples (a,b) indicating
+    Returns a list of results (True/False) for the list of tuples (a,b) indicating
     whether b followed back a
     """
     def get_results(self, edges):
@@ -91,8 +91,8 @@ class Feature_Extractor:
         all_users = list(self.get_users())
         for (p1, p2) in edges:
             if p1 in all_users and p2 in all_users and p2 in list(self.get_user_fans(p1)):
-                result.append(1)
+                result.append(True)
             else:
-                result.append(-1)
+                result.append(False)
         return result
             
