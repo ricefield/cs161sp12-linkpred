@@ -70,6 +70,6 @@ def extract_values(set):
         try:
             val = set.pop()
             output.append(val)
-        except IndexError:
+        except KeyError:
             break
     return output
