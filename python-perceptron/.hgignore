@@ -1,6 +1,0 @@
-syntax: regexp
-~$
-\#[^/]+\#$
-\.py[oc]$
-^perceptron.egg-info
-^dist
