@@ -64,4 +64,12 @@ class Feature_Extractor:
         uid2_friends = self.get_user_friends(uid2)
         return uid1_friends.intersection(uid2_friends) 
 
-    
+def extract_values(set):
+    output = []
+    while True:
+        try:
+            val = output.pop()
+            output.append(val)
+        except KeyError:
+            break
+    return output
