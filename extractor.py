@@ -16,7 +16,7 @@ for (p1, p2) in follows:
         print "-1" if method == 's' else '0',
     
     #Common Neighbors
-    num_common_neighbors = len(list(f_test.get_user_friends(p1, p2)))
+    num_common_neighbors = len(list(f_test.get_common_friends(p1, p2)))
     print '1:%s' % str(num_common_neighbors) if method == 's'else str(num_common_neighbors),
     
     print
