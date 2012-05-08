@@ -68,7 +68,7 @@ def extract_values(set):
     output = []
     while True:
         try:
-            val = output.pop()
+            val = set.pop()
             output.append(val)
         except IndexError:
             break
