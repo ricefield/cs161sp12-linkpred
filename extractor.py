@@ -15,6 +15,7 @@ results = f_result.get_results(follows)
 
 i = 0
 for (p1, p2) in follows:
+    #Result
     if results[i]:
         print "+1" if method == 's' else "1",
     else:
