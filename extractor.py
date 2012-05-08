@@ -1,13 +1,18 @@
+#!/usr/bin/python
+
 from features_util import *
 from sys import argv
 
-method = 's'
-str1 = 'test-graph-2011-07-04'
-str2 = 'test-graph-2011-08-04'
-f_test = Feature_Extractor(str1)
-f_result = Feature_Extractor(str2)
+method = 's' if len(argv) < 2 else argv[1]
+test_snapshot = 'test-graph-2011-07-04' if len(argv) < 4 else argv[2]
+result_snapshot = 'test-graph-2011-08-04' if len(argv) < 4 else argv[3]
+
+f_test = Feature_Extractor(test_snapshot)
+f_result = Feature_Extractor(result_snapshot)
+
 follows = f_test.get_follow_only_edges()
 results = f_result.get_results(follows)
+
 i = 0
 for (p1, p2) in follows:
     if results[i]:
