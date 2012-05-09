@@ -1,3 +1,4 @@
+import math
 import redis
 
 """
@@ -5,6 +6,8 @@ Terminology:
     Interests(IN) - people who you've added in your circles
     Fans(FA) - people who've added you in their circles
     Friends(FR) - people who you've added and have added you in circles
+
+    I use common neighbors and mutual neighbors interchangeably.
 """
 
 
@@ -101,6 +104,54 @@ class Feature_Extractor:
         return uid1_fans.intersection(uid2_fans)
 
 
+    def get_mutual_neighbors(self, uid1, uid2, mutual_neighbor_type):
+       
+        mutual_neighbors = {Mutual_Neighbor.FR_OF_FR : self.get_common_friends(uid1, uid2),
+                       
+                       Mutual_Neighbor.FA_OF_FA : 
+                       self.get_user_fans(uid1).intersection(self.get_user_interests(uid2)),
+                       
+                       Mutual_Neighbor.IN_OF_IN : 
+                       self.get_user_interests(uid1).intersection(self.get_user_fans(uid2)),
+                       
+                       Mutual_Neighbor.FR_OF_FA : 
+                       self.get_user_fans(uid1).intersection(self.get_user_friends(uid2)),
+                       
+                       Mutual_Neighbor.FR_OF_IN : 
+                       self.get_user_interests(uid1).intersection(self.get_user_friends(uid2)),
+
+                       Mutual_Neighbor.FA_OF_FR :
+                       self.get_user_friends(uid1).intersection(self.get_user_interests(uid2)),
+
+                       Mutual_Neighbor.FA_OF_IN :
+                       self.get_common_interests(uid1, uid2),
+
+                       Mutual_Neighbor.FR_OF_FA : 
+                       self.get_user_fans(uid1).intersection(self.get_user_friends(uid2)),
+
+                       Mutual_Neighbor.FR_OF_IN :
+                       self.get_user_interests(uid1).intersection(self.get_user_friends(uid2)),
+
+                       Mutual_Neighbor.IN_OF_FA :
+                       self.get_common_fans(uid1,uid2),
+
+                       Mutual_Neighbor.IN_OF_FR :
+                       self.get_user_friends(uid1).intersection(self.get_user_fans(uid2)),
+                       }
+
+        return mutual_neighbors[mutual_neighbor_type]
+
+    """
+    Returns set of all neighbors of the specified type
+    Params: uid as string, neighbor_type(use one of the Neighbor_Type enums)
+    """
+    def get_neighbors(self, uid, neighbor_type):
+        neighbors = {Neighbor_Type.FR : self.get_user_friends(uid),
+                     Neighbor_Type.FA : self.get_user_fans(uid),
+                     Neighbor_Type.IN : self.get_user_interests(uid)}
+        return neighbors[neighbor_type]
+
+
     """ 
     Returns jaccard's coefficient as a float for two users.
     Params: uid1 and uid2 as strings and use enums (Neighbor_Type and
@@ -110,44 +161,29 @@ class Feature_Extractor:
     def get_jaccard(self, uid1, uid2, neighbor_type, mutual_neighbor_type):
         #jaccard is intersectin of neighbors(common neighbors) over all neighbors
         #9 different types of mutual neighbors 3 different types of neighbors
-        neighbor_num = {Neighbor_Type.FR : len(self.get_user_friends(uid1)) + len(self.get_user_friends(uid2)),
-                        Neighbor_Type.FA : len(self.get_user_fans(uid1)) + len(self.get_user_fans(uid2)),
-                        Neighbor_Type.IN : len(self.get_user_interests(uid1)) + len(self.get_user_interests(uid2))}
-
-        mutual_n_num = {Mutual_Neighbor.FR_OF_FR : len(self.get_common_friends(uid1, uid2)),
-                       
-                       Mutual_Neighbor.FA_OF_FA : 
-                       len(self.get_user_fans(uid1).intersection(self.get_user_interests(uid2))),
-                       
-                       Mutual_Neighbor.IN_OF_IN : 
-                       len(self.get_user_interests(uid1).intersection(self.get_user_fans(uid2))),
-                       
-                       Mutual_Neighbor.FR_OF_FA : 
-                       len(self.get_user_fans(uid1).intersection(self.get_user_friends(uid2))),
-                       
-                       Mutual_Neighbor.FR_OF_IN : 
-                       len(self.get_user_interests(uid1).intersection(self.get_user_friends(uid2))),
-
-                       Mutual_Neighbor.FA_OF_FR :
-                       len(self.get_user_friends(uid1).intersection(self.get_user_interests(uid2))),
-
-                       Mutual_Neighbor.FA_OF_IN :
-                       len(self.get_common_interests(uid1, uid2)),
-
-                       Mutual_Neighbor.FR_OF_FA : 
-                       len(self.get_user_fans(uid1).intersection(self.get_user_friends(uid2))),
-
-                       Mutual_Neighbor.FR_OF_IN :
-                       len(self.get_user_interests(uid1).intersection(self.get_user_friends(uid2))),
-
-                       Mutual_Neighbor.IN_OF_FA :
-                       len(self.get_common_fans(uid1,uid2)),
-
-                       Mutual_Neighbor.IN_OF_FR :
-                       len(self.get_user_friends(uid1).intersection(self.get_user_fans(uid2))),
-                       }
+        neighbors_intersection = len(self.get_mutual_neighbors(uid1, uid2, mutual_neighbor_type))
+        all_neighbors = len(self.get_neighbors(uid1, neighbor_type)) + len(self.get_neighbors(uid2, neighbor_type))
         
-        return float(mutual_n_num[mutual_neighbor_type]) / neighbor_num[neighbor_type]
+        return float(neighbor_intersection)/all_neighbors
+
+
+    """ 
+    Returns adamic/adar as a float for two users.
+    Params: uid1 and uid2 as strings and use enums (Neighbor_Type and
+            Mutual_Neighbor) defined above for neighbor types and mutual
+            neighbor type. For mutual neighbor type it is what uid2 is to uid1
+    """
+    def get_adamic(self, uid1, uid2, neighbor_type, mutual_neighbor_type):
+        #sum over all common neighbor(9 types) and for each common neighbor 1/log(# neighbors each common
+        #neighbor has(3 types)
+        result = 0.0
+        mutual_neighbors = self.get_mutual_neighbors(uid1, uid2, mutual_neighbor_type) 
+        
+        for n in mutual_neighbors:
+            neighbor_count = len(self.get_neighbors(n, neighbor_type))
+            result +=  ( 1 / float(math.log(neighbor_count)) )
+        
+        return result
 
 
     """
