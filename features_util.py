@@ -129,7 +129,7 @@ class Feature_Extractor:
                        len(self.get_user_interests(uid1).intersection(self.get_user_friends(uid2))),
 
                        Mutual_Neighbor.FA_OF_FR :
-                       len(self.get_user_friend(uid1).intersection(self.get_user_interests(uid2))),
+                       len(self.get_user_friends(uid1).intersection(self.get_user_interests(uid2))),
 
                        Mutual_Neighbor.FA_OF_IN :
                        len(self.get_common_interests(uid1, uid2)),
