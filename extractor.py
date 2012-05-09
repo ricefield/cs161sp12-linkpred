@@ -6,15 +6,15 @@ from sys import argv
 method = 's' if len(argv) < 2 else argv[1]
 test_snapshot = 'test-graph-2011-07-04' if len(argv) < 4 else argv[2]
 result_snapshot = 'test-graph-2011-08-04' if len(argv) < 4 else argv[3]
-debug_print = False if len(argv) < 5 else (argv[4] == "-v")
+DEBUG = False if len(argv) < 5 else (argv[4] == "-v")
 
 f_test = Feature_Extractor(test_snapshot)
 f_result = Feature_Extractor(result_snapshot)
 
-if debug_print:
+if DEBUG:
     print "finding follows"
 follows = f_test.get_follow_only_edges()
-if debug_print:
+if DEBUG:
     print "finding results"
 results = f_result.get_results(follows)
 
@@ -50,5 +50,5 @@ for (p1, p2) in follows:
     
     print
     count += 1
-    if debug_print:
+    if DEBUG:
         print count
