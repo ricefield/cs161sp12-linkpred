@@ -25,10 +25,10 @@ def main():
             false_neg += 1
     
     acc = float(true_pos)/(true_pos + true_neg)
-    print "Predicted %f of actual follow-backs." % acc
+    print "%f\tof actual follow-backs predicted." % acc
     acc2 = float(true_pos)/(true_pos + false_pos)
-    print "%f of predicted follow-backs were correct." % acc2
+    print "%f\tof predicted follow-backs were correct." % acc2
     acc3 = float(true_pos + false_neg)/(true_pos + false_pos + true_neg + false_neg)
-    print "%f of all predictions were accurate." % acc3
+    print "%f\tof all predictions were accurate." % acc3
     
 main()
