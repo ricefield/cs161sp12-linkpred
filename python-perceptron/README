@@ -6,10 +6,18 @@ a given training example x, if the perceptron classification y' is the same as
 the correct label y, do nothing; otherwise, adjust the weight vector for class y
 as w += x and the weight vector for class y' as w -= x.
 
-The source distribution includes a basic test module that loads the "oil" data
-distributed with the Bishop material online and classifies it using several
-perceptron variants. Run this test with :
+==== JON's INSTRUCTIONS ====
+
+to run the perceptron:
 
 python perceptron_test.py
 
-Have fun !
+which will print to the screen the results for several different flavors of perceptron,
+as well as a file, prob_results, which prints the probability for each individual 
+followback prediction (columns are real, guess, and probability)
+
+the data the perceptron is run off is in data/
+
+flow-train.txt and flow-test.txt
+
+this currently all test data and needs to be replaced with G+ data
