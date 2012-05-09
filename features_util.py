@@ -159,6 +159,7 @@ class Feature_Extractor:
     def get_follow_only_edges(self):
         out = []
         all_users = list(self.get_users())
+        i = 0
         for user in all_users:
             i += 1
             if i > Feature_Extractor.TEST_SIZE:
