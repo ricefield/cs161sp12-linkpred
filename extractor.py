@@ -15,18 +15,29 @@ follows = f_test.get_follow_only_edges()
 print "finding results"
 results = f_result.get_results(follows)
 
-i = 0
+count = 0
 for (p1, p2) in follows:
+    
     #Result
     if results[i]:
         print "+1" if method == 's' else "1",
     else:
         print "-1" if method == 's' else '0',
     
+    feature = 1
+    
     #Common Neighbors
     num_common_neighbors = len(list(f_test.get_common_friends(p1, p2)))
-    print '1:%s' % str(num_common_neighbors) if method == 's'else str(num_common_neighbors),
+    print '%d:%d' % (feature, num_common_neighbors) if method == 's' else str(num_common_neighbors),
+    feature += 1
+    
+    #Jacaard
+    for mut_neighbor_type in range(9):
+        for neighbor_type in range(3):
+            j_val = f_test.get_jacaard(p1, p2, neighbor_type, mut_neighbor_type)
+            print '%d:%f' % (feature, j_val) if method == 's' else str(j_val),
+            feature += 1
     
     print
-    i += 1
-    print i
+    count += 1
+    print count
