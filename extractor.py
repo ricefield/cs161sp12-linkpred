@@ -10,7 +10,9 @@ result_snapshot = 'test-graph-2011-08-04' if len(argv) < 4 else argv[3]
 f_test = Feature_Extractor(test_snapshot)
 f_result = Feature_Extractor(result_snapshot)
 
+print "finding follows"
 follows = f_test.get_follow_only_edges()
+print "finding results"
 results = f_result.get_results(follows)
 
 i = 0
@@ -27,3 +29,4 @@ for (p1, p2) in follows:
     
     print
     i += 1
+    print i

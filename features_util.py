@@ -24,7 +24,7 @@ class Neighbor_Type:
     
 class Feature_Extractor:
 
-    TEST_SIZE = 10000
+    TEST_SIZE = 1000
 
     """
     Params: snapshot is filename of snapshot as string
@@ -162,6 +162,7 @@ class Feature_Extractor:
         i = 0
         for user in all_users:
             i += 1
+            print i
             if i > Feature_Extractor.TEST_SIZE:
                 break
             interests = self.get_user_interests(user)
