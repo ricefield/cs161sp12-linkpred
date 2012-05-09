@@ -37,6 +37,7 @@ class Feature_Extractor:
         self.snapshot = snapshot
         self.r_server=redis.Redis("localhost")
 
+
     """
     Returns number of users in the snapshot
     Params: None
@@ -44,12 +45,14 @@ class Feature_Extractor:
     def num_users(self):
         return self.r_server.scard("%s:users" % (self.snapshot))
 
+
     """
     Returns a set of all uid's in the snapshot
     Params: None
     """
     def get_users(self):
         return self.r_server.smembers("%s:users" % (self.snapshot))
+
 
     """
     Returns a set of all uid's interests in the snapshot
@@ -106,6 +109,10 @@ class Feature_Extractor:
         return uid1_fans.intersection(uid2_fans)
 
 
+    """
+    Returns set of all_mutual_neighbors of the specified type
+    Params: uid as string, neighbor_type(use one of the Neighbor_Type enums)
+    """
     def get_mutual_neighbors(self, uid1, uid2, mutual_neighbor_type):
        
         mutual_neighbors = {Mutual_Neighbor.FR_OF_FR : self.get_common_friends(uid1, uid2),
@@ -143,6 +150,7 @@ class Feature_Extractor:
 
         return mutual_neighbors[mutual_neighbor_type]
 
+
     """
     Returns set of all neighbors of the specified type
     Params: uid as string, neighbor_type(use one of the Neighbor_Type enums)
@@ -151,6 +159,7 @@ class Feature_Extractor:
         neighbors = {Neighbor_Type.FR : self.get_user_friends(uid),
                      Neighbor_Type.FA : self.get_user_fans(uid),
                      Neighbor_Type.IN : self.get_user_interests(uid)}
+
         return neighbors[neighbor_type]
 
 
