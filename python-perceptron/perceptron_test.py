@@ -100,7 +100,10 @@ def test(learner):
     '''Test a learner on a randomly generated set of data.'''
     correct = [0] * OUTCOME_SIZE
     j = 0
-	PROB_RESULTS = []
+    prob_results = []
+    f = open('prob_results', 'w')
+    f.write("guess   real   prob")
+
     for j, (outcome, event) in enumerate(_parse('data/flow-test.txt')):
         features = event
         if isinstance(learner, perceptron.SparseAveragedPerceptron):
@@ -108,17 +111,15 @@ def test(learner):
         pred, _ = learner.classify(features)
         if pred == outcome:
             correct[outcome] += 1
-		PROB_RESULTS.append((pred, outcome, _))
-    f = open('prob_results', 'w')
-	f.write("guess   real   probability")
-	f.write('\n'.join('%s %s %s' % x for x in PROB_RESULTS))
-	f.close()
-	return correct, j
+	prob_results.append((pred, outcome, _))
+    f.write('\n'.join('%s %s %s' % x for x in prob_results))
+    f.close()
+    return correct, j
 
 
 if __name__ == '__main__':
     for klass, flavor, learner in learners():
         train(learner)
-        correct, count, prob = test(learner)
+        correct, count = test(learner)
         print '%s - %s - accuracy %.2f, correct per class %s' % (
             klass, flavor, 100.0 * sum(correct) / count, correct)
