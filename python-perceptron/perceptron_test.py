@@ -35,6 +35,8 @@ DEGREES = (1, 3, 5)
 GAMMAS = (0.001, 0.01, 0.1, 1)
 BEAM_WIDTHS = (1, 10, 100, 1000)
 
+PROB_RESULTS =  list()
+
 
 def learners():
     kwargs = dict(event_size=EVENT_SIZE, outcome_size=OUTCOME_SIZE)
@@ -104,14 +106,18 @@ def test(learner):
         if isinstance(learner, perceptron.SparseAveragedPerceptron):
             features = set(_features(event))
         pred, _ = learner.classify(features)
+		PROB_RESULTS.append((pred, outcome, _))
         if pred == outcome:
             correct[outcome] += 1
-    return correct, j
+    f = open('prob_results', 'w')
+	f.write("guess   real   probability")
+	f.write('\n'.join('%s %s %s' % x for x in PROB_RESULTS))
+	return correct, j
 
 
 if __name__ == '__main__':
     for klass, flavor, learner in learners():
         train(learner)
-        correct, count = test(learner)
+        correct, count, prob = test(learner)
         print '%s - %s - accuracy %.2f, correct per class %s' % (
             klass, flavor, 100.0 * sum(correct) / count, correct)
