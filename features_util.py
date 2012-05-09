@@ -15,7 +15,7 @@ Terminology:
 Enum for all the mutual neighbor types
 """
 class Mutual_Neighbor:
-    FR_OF_FR, FA_OF_FA, IN_OF_IN, FR_OF_IN, FR_OF_FAN, FA_OF_IN, FA_OF_FR, IN_OF_FA, IN_OF_FR = range(9) 
+    FR_OF_FR, FA_OF_FA, IN_OF_IN, FR_OF_IN, FR_OF_FA, FA_OF_IN, FA_OF_FR, IN_OF_FA, IN_OF_FR = range(9) 
 
 
 """
@@ -175,7 +175,7 @@ class Feature_Extractor:
         neighbors_intersection = len(self.get_mutual_neighbors(uid1, uid2, mutual_neighbor_type))
         all_neighbors = len(self.get_neighbors(uid1, neighbor_type)) + len(self.get_neighbors(uid2, neighbor_type))
         
-        return float(neighbor_intersection)/all_neighbors
+        return float(neighbors_intersection)/all_neighbors
 
 
     """ 
@@ -192,9 +192,20 @@ class Feature_Extractor:
         
         for n in mutual_neighbors:
             neighbor_count = len(self.get_neighbors(n, neighbor_type))
-            result +=  ( 1 / float(math.log(neighbor_count)) )
+            if neighbor_count != 0:
+                result +=  ( 1 / float(math.log(neighbor_count)) )
         
         return result
+
+    """ 
+    Returns Preferential attachment as an integer for two users.
+    Params: uid1 and uid2 as strings and use enums (Neighbor_Type)
+            defined above for neighbor_type param    
+    """
+    def get_pref_attachment(self, uid1, uid2, neighbor_type):
+        uid1_neighbors = self.get_neighbors(uid1, neighbor_type)
+        uid2_neighbors = self.get_neighbors(uid2, neighbor_type)
+        return len(uid1_neighbors) * len(uid2_neighbors)
 
 
     """
