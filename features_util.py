@@ -33,9 +33,10 @@ class Feature_Extractor:
     Params: snapshot is filename of snapshot as string
     i.e for test-graph-2011-07-04.txt it will be 'test-graph-2011-07-04'
     """
-    def __init__(self, snapshot):
+    def __init__(self, snapshot, DEBUG = False):
         self.snapshot = snapshot
         self.r_server=redis.Redis("localhost")
+        self.DEBUG = DEBUG
 
 
     """
@@ -218,7 +219,8 @@ class Feature_Extractor:
         i = 0
         for user in all_users:
             i += 1
-            print i
+            if DEBUG:
+                print i
             if i > Feature_Extractor.TEST_SIZE:
                 break
             interests = self.get_user_interests(user)
@@ -240,7 +242,8 @@ class Feature_Extractor:
         i = 0
         for (p1, p2) in edges:
             i += 1
-            print i
+            if DEBUG:
+                print i
             if p1 in all_users and p2 in all_users and p2 in list(self.get_user_fans(p1)):
                 result.append(True)
             else:
