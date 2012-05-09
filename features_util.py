@@ -24,6 +24,8 @@ class Neighbor_Type:
     
 class Feature_Extractor:
 
+    TEST_SIZE = 10000
+
     """
     Params: snapshot is filename of snapshot as string
     i.e for test-graph-2011-07-04.txt it will be 'test-graph-2011-07-04'
@@ -158,6 +160,9 @@ class Feature_Extractor:
         out = []
         all_users = list(self.get_users())
         for user in all_users:
+            i += 1
+            if i > Feature_Extractor.TEST_SIZE:
+                break
             interests = self.get_user_interests(user)
             fans = self.get_user_fans(user)
             people = list(interests.difference(fans))
