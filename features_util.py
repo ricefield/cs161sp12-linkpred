@@ -181,7 +181,10 @@ class Feature_Extractor:
     def get_results(self, edges):
         result = []
         all_users = list(self.get_users())
+        i = 0
         for (p1, p2) in edges:
+            i += 1
+            print i
             if p1 in all_users and p2 in all_users and p2 in list(self.get_user_fans(p1)):
                 result.append(True)
             else:
