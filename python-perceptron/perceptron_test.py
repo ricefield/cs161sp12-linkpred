@@ -36,6 +36,7 @@ GAMMAS = (0.001, 0.01, 0.1, 1)
 BEAM_WIDTHS = (1, 10, 100, 1000)
 
 
+
 def learners():
     kwargs = dict(event_size=EVENT_SIZE, outcome_size=OUTCOME_SIZE)
     for klass in ('Perceptron', 'AveragedPerceptron'):
@@ -99,6 +100,10 @@ def test(learner):
     '''Test a learner on a randomly generated set of data.'''
     correct = [0] * OUTCOME_SIZE
     j = 0
+    prob_results = []
+    f = open('prob_results', 'w')
+    f.write("guess   real   prob")
+
     for j, (outcome, event) in enumerate(_parse('data/flow-test.txt')):
         features = event
         if isinstance(learner, perceptron.SparseAveragedPerceptron):
@@ -106,6 +111,9 @@ def test(learner):
         pred, _ = learner.classify(features)
         if pred == outcome:
             correct[outcome] += 1
+	prob_results.append((pred, outcome, _))
+    f.write('\n'.join('%s %s %s' % x for x in prob_results))
+    f.close()
     return correct, j
 
 

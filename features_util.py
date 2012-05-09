@@ -27,6 +27,8 @@ class Neighbor_Type:
     
 class Feature_Extractor:
 
+    TEST_SIZE = 1000
+
     """
     Params: snapshot is filename of snapshot as string
     i.e for test-graph-2011-07-04.txt it will be 'test-graph-2011-07-04'
@@ -193,7 +195,12 @@ class Feature_Extractor:
     def get_follow_only_edges(self):
         out = []
         all_users = list(self.get_users())
+        i = 0
         for user in all_users:
+            i += 1
+            print i
+            if i > Feature_Extractor.TEST_SIZE:
+                break
             interests = self.get_user_interests(user)
             fans = self.get_user_fans(user)
             people = list(interests.difference(fans))
@@ -210,7 +217,10 @@ class Feature_Extractor:
     def get_results(self, edges):
         result = []
         all_users = list(self.get_users())
+        i = 0
         for (p1, p2) in edges:
+            i += 1
+            print i
             if p1 in all_users and p2 in all_users and p2 in list(self.get_user_fans(p1)):
                 result.append(True)
             else:
