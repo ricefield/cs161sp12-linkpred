@@ -224,7 +224,7 @@ class Feature_Extractor:
         for user in all_users:
             i += 1
             if self.DEBUG:
-                print i
+                print i,
             if i > Feature_Extractor.TEST_SIZE:
                 break
             interests = self.get_user_interests(user)
@@ -233,6 +233,8 @@ class Feature_Extractor:
             for person in people:
                 if person in all_users:
                     out.append((user, person))
+        if self.DEBUG:
+            print
         return out
    
 
@@ -248,13 +250,15 @@ class Feature_Extractor:
         for (p1, p2) in edges:
             i += 1
             if self.DEBUG:
-                print i
+                print i,
             if not complete and (p1 not in all_users or p2 not in all_users):
                 result.append(False)
             if p2 in list(self.get_user_fans(p1)):
                 result.append(True)
             else:
                 result.append(False)
+        if self.DEBUG:
+            print
         return result
             
     """

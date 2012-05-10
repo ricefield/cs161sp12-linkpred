@@ -85,7 +85,7 @@ try:
         
         count += 1
         if DEBUG:
-            print count
+            print count,
 except:
     print "ERROR"
 fs.close()
