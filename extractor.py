@@ -37,7 +37,7 @@ for (p1, p2) in follows:
     #Jacaard
     for mut_neighbor_type in range(9):
         for neighbor_type in range(3):
-            j_val = f_test.get_jacaard(p1, p2, neighbor_type, mut_neighbor_type)
+            j_val = f_test.get_jaccard(p1, p2, neighbor_type, mut_neighbor_type)
             print '%d:%f' % (feature, j_val) if method == 's' else '%f' % j_val,
             feature += 1
     
