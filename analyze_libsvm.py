@@ -8,7 +8,7 @@ f_train = 'training_set' if len(sys.argv) < 3 else sys.argv[1]
 f_test = 'testing_set' if len(sys.argv) < 3 else sys.argv[2]
 
 y_train, x_train = svm_read_problem(f_train)
-m = svm_train(y, x, '-c 4')
+m = svm_train(y_train, x_train, '-c 4')
 y_test, x_test = svm_read_problem(f_test)
 p_label, p_acc, p_val = svm_predict(y_test, x_test, m)
 
