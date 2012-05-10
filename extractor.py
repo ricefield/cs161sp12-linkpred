@@ -50,7 +50,7 @@ try:
         num_common_neighbors = len(list(f_test.get_common_friends(p1, p2)))
         #print '%d:%d' % (feature, num_common_neighbors) if method == 's' else str(num_common_neighbors),
         fs.write(' %d:%d' % (feature, num_common_neighbors))
-        fp.write(str(num_common_neighbors))
+        fp.write(' %d' % num_common_neighbors)
         feature += 1
         
         #Jacaard
