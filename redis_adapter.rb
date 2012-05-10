@@ -53,22 +53,24 @@ class RedisAdapter
       add_user(uid, @snapshot)
     end
 
-    # Migrate the second snapshot for comparison
-    puts "Reading from #{@input2}"
-    File.open(@input2).each do |entry|
-      #puts "Reading from #{@input2}"
-      uid, type, num = entry.split # strings
-      links = entry.split[3,num.to_i] # users "related" to specified user uid
-      #timestamp = entry[entry.lenth-1] # not using this for now...very fine granularity
-
-      if type == '0'
-        links.each { |i| add_interest_to_set(uid, i, @snapshot2) }
-      else type == '1'
-        links.each { |i| add_fan_to_set(uid, i, @snapshot2) }
+    # Migrate the second snapshot for comparison, if it exists
+    if @input2
+      puts "Reading from #{@input2}"
+      File.open(@input2).each do |entry|
+        #puts "Reading from #{@input2}"
+        uid, type, num = entry.split # strings
+        links = entry.split[3,num.to_i] # users "related" to specified user uid
+        #timestamp = entry[entry.lenth-1] # not using this for now...very fine granularity
+        
+        if type == '0'
+          links.each { |i| add_interest_to_set(uid, i, @snapshot2) }
+        else type == '1'
+          links.each { |i| add_fan_to_set(uid, i, @snapshot2) }
+        end
+        add_user(uid, @snapshot2)
       end
-      add_user(uid, @snapshot2)
     end
-
+    
     puts "Finished reading input."
     puts "Finished migration from #{@input} to redis server."
   end
