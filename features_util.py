@@ -196,9 +196,9 @@ class Feature_Extractor:
         
         for n in mutual_neighbors:
             neighbor_count = len(self.get_neighbors(n, neighbor_type))
-            neighbor_count_log = float(math.log(neighbor_count))
-            if neighbor_count_log != 0:
-                result +=  ( 1 / neighbor_count_log ) 
+            
+            if neighbor_count != 0 and float(math.log(neighbor_count)) != 0:
+                result +=  ( 1 /  float(math.log(neighbor_count)) ) 
         
         return result
 
