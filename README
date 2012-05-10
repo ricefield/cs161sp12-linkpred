@@ -4,5 +4,5 @@ pipeline:
 - migrate the files {"ruby redis_adaptor.rb"}
 - call the extractor file {./extractor.py [p/s [snapshot1 snapshot2 [output_name]]]}
   - p/s is perceptron/SVM, snapshot1 is the first snapshot, snapshot2 is the second snapshot (omit the .txt), output_name is the prefix you want the output files to have
-- call the analysis files {./analyze_libsvm.py trainingfile testfile > output}
+- call the analysis files {./analyze_libsvm.py training_filename test_filename output_filename}
 - call the evalator file {./eval.py < data}
