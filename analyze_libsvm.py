@@ -15,4 +15,4 @@ p_label, p_acc, p_val = svm_predict(y_test, x_test, m)
 
 f = open(f_write, 'w')
 for i in range(len(y_test)):
-    f.write(y_test[i], p_label[i], p_val[i][0])
+    f.write("%s %s %f\n" % (y_test[i], p_label[i], p_val[i][0]))
