@@ -22,7 +22,7 @@ count = 0
 for (p1, p2) in follows:
     
     #Result
-    if results[i]:
+    if results[count]:
         print "+1" if method == 's' else "1",
     else:
         print "-1" if method == 's' else '0',
