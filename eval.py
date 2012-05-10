@@ -2,8 +2,8 @@
 
 from sys import stdin, stdout, argv
 
-POSITIVES = ['+1', '1']
-NEGATIVES = ['-1', '0']
+POSITIVES = ['+1', '1.0', '1']
+NEGATIVES = ['-1', '-1.0', '0']
     
 def main():
     lines = stdin.readlines()

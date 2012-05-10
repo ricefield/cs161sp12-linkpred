@@ -1,5 +1,8 @@
-pipeline:
+Setup:
+- install redis DB
+- copy libsvm library to "/usr/libsvm/"
 
+Running the pipeline:
 - run the redis database
 - migrate the files {"ruby redis_adaptor.rb"}
 - call the extractor file {./extractor.py [p/s [snapshot1 snapshot2 [output_name]]]}
