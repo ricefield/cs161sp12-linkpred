@@ -258,4 +258,4 @@ class Feature_Extractor:
     Returns a set of followbacks
     """
     def get_followbacks(self, snapshot2):
-        return self.r_server.scard("%s:%s:users" % (self.snapshot, snapshot2))
+        return self.r_server.smembers("%s:%s:users" % (self.snapshot, snapshot2))

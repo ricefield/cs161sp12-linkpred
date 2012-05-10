@@ -21,50 +21,59 @@ results = f_result.get_results(follows)
 
 count = 0
 mid = len(follows)/2
-f = None
-for (p1, p2) in follows:
+f = open(output_name + '_train_' + method, 'w')
+try:
+    for (p1, p2) in follows:
 
-    if count == 0:
-        f = open(output_name + '_train_' + method, 'w')
-    elif count == mid:
-        f.close()
-        f = open(output_name + '_test_' + method, 'w')
-    
-    #Result
-    if results[count]:
-        f.write("+1" if method == 's' else "1")
-        #print "+1" if method == 's' else "1",
-    else:
-        #print "-1" if method == 's' else "0",
-        f.write("-1" if method == 's' else "0")
-    
-    feature = 1
-    
-    #Common Neighbors
-    num_common_neighbors = len(list(f_test.get_common_friends(p1, p2)))
-    #print '%d:%d' % (feature, num_common_neighbors) if method == 's' else str(num_common_neighbors),
-    f.write(' %d:%d' % (feature, num_common_neighbors) if method == 's' else str(num_common_neighbors))
-    feature += 1
-    
-    #Jacaard
-    for mut_neighbor_type in range(9):
+        if count == mid:
+            f.close()
+            f = open(output_name + '_test_' + method, 'w')
+        
+        #Result
+        if results[count]:
+            #print "+1" if method == 's' else "1",
+            f.write("+1" if method == 's' else "1")
+        else:
+            #print "-1" if method == 's' else "0",
+            f.write("-1" if method == 's' else "0")
+        
+        feature = 1
+        
+        #Common Neighbors
+        num_common_neighbors = len(list(f_test.get_common_friends(p1, p2)))
+        #print '%d:%d' % (feature, num_common_neighbors) if method == 's' else str(num_common_neighbors),
+        f.write(' %d:%d' % (feature, num_common_neighbors) if method == 's' else str(num_common_neighbors))
+        feature += 1
+        
+        #Jacaard
+        for mut_neighbor_type in range(9):
+            for neighbor_type in range(3):
+                j_val = f_test.get_jaccard(p1, p2, neighbor_type, mut_neighbor_type)
+                #print '%d:%f' % (feature, j_val) if method == 's' else '%f' % j_val,
+                f.write(' %d:%f' % (feature, j_val) if method == 's' else '%f' % j_val)
+                feature += 1
+        
+        #Adamic-Adar
+        for mut_neighbor_type in range(9):
+            for neighbor_type in range(3):
+                aa_val = f_test.get_adamic(p1, p2, neighbor_type, mut_neighbor_type)
+                #print '%d:%f' % (feature, aa_val) if method == 's' else '%f' % aa_val,
+                f.write(' %d:%f' % (feature, aa_val) if method == 's' else '%f' % aa_val)
+                feature += 1
+        
+        #Preferential Attachment
         for neighbor_type in range(3):
-            j_val = f_test.get_jaccard(p1, p2, neighbor_type, mut_neighbor_type)
-            #print '%d:%f' % (feature, j_val) if method == 's' else '%f' % j_val,
-            f.write(' %d:%f' % (feature, j_val) if method == 's' else '%f' % j_val)
+            pref = f_test.get_pref_attachment(p1, p2, neighbor_type)
+            #print ' %d:%d' % (feature, pref) if method == 's' else '%d' % pref,
+            f.write(' %d:%d' % (feature, pref) if method == 's' else '%d' % pref)
             feature += 1
-    
-    #Adamic-Adar
-    for mut_neighbor_type in range(9):
-        for neighbor_type in range(3):
-            aa_val = f_test.get_adamic(p1, p2, neighbor_type, mut_neighbor_type)
-            #print '%d:%f' % (feature, aa_val) if method == 's' else '%f' % aa_val,
-            f.write(' %d:%f' % (feature, aa_val) if method == 's' else '%f' % aa_val)
-            feature += 1
-    
-    #print
-    f.write('\n')
-    
-    count += 1
-    if DEBUG:
-        print count
+        
+        #print
+        f.write('\n')
+        
+        count += 1
+        if DEBUG:
+            print count
+except:
+    print "ERROR"
+f.close()
