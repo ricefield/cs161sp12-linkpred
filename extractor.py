@@ -16,6 +16,7 @@ if DEBUG:
     print "finding follows"
 follows = f_test.get_follow_only_edges()
 if DEBUG:
+    print "%d follows tracked" % len(follows)
     print "finding results"
 complete = (result_snapshot == 'graph-2011-07-11')
 results = f_result.get_results(follows, complete)
