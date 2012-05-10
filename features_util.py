@@ -240,15 +240,18 @@ class Feature_Extractor:
     Returns a list of results (True/False) for the list of tuples (a,b) indicating
     whether b followed back a
     """
-    def get_results(self, edges):
+    def get_results(self, edges, complete = False):
         result = []
-        all_users = list(self.get_users())
+        if !complete:
+            all_users = list(self.get_users())
         i = 0
         for (p1, p2) in edges:
             i += 1
             if self.DEBUG:
                 print i
-            if p1 in all_users and p2 in all_users and p2 in list(self.get_user_fans(p1)):
+            if !complete and (p1 not in all_users or p2 not in all_users):
+                result.append(False)
+            if p2 in list(self.get_user_fans(p1)):
                 result.append(True)
             else:
                 result.append(False)
