@@ -175,6 +175,9 @@ class Feature_Extractor:
         #9 different types of mutual neighbors 3 different types of neighbors
         neighbors_intersection = len(self.get_mutual_neighbors(uid1, uid2, mutual_neighbor_type))
         all_neighbors = len(self.get_neighbors(uid1, neighbor_type)) + len(self.get_neighbors(uid2, neighbor_type))
+
+        if all_neighbors == 0:
+            return 0.0
         
         return float(neighbors_intersection)/all_neighbors
 
