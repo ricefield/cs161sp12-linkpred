@@ -219,7 +219,7 @@ class Feature_Extractor:
         i = 0
         for user in all_users:
             i += 1
-            if DEBUG:
+            if self.DEBUG:
                 print i
             if i > Feature_Extractor.TEST_SIZE:
                 break
@@ -242,7 +242,7 @@ class Feature_Extractor:
         i = 0
         for (p1, p2) in edges:
             i += 1
-            if DEBUG:
+            if self.DEBUG:
                 print i
             if p1 in all_users and p2 in all_users and p2 in list(self.get_user_fans(p1)):
                 result.append(True)

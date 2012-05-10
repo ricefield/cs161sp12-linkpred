@@ -1,5 +1,3 @@
-require 'rubygems'
-require 'ruby-debug'
 require 'redis'
 
 # Data in the form:
@@ -40,8 +38,9 @@ class RedisAdapter
     puts "Preparing to migrate..."
 
     # Migrate the initial snapshot
+    puts "Reading from #{@input}"
     File.open(@input).each do |entry|
-      puts "Reading from #{@input}"
+      #puts "Reading from #{@input}"
       uid, type, num = entry.split # strings
       links = entry.split[3,num.to_i] # users "related" to specified user uid
       #timestamp = entry[entry.lenth-1] # not using this for now...very fine granularity
@@ -55,8 +54,9 @@ class RedisAdapter
     end
 
     # Migrate the second snapshot for comparison
+    puts "Reading from #{@input2}"
     File.open(@input2).each do |entry|
-      puts "Reading from #{@input2}"
+      #puts "Reading from #{@input2}"
       uid, type, num = entry.split # strings
       links = entry.split[3,num.to_i] # users "related" to specified user uid
       #timestamp = entry[entry.lenth-1] # not using this for now...very fine granularity
@@ -194,18 +194,21 @@ class RedisAdapter
 end
 
 
-migrator = RedisAdapter.new("test-graph-2011-07-04.txt","test-graph-2011-08-04.txt")
+migrator = RedisAdapter.new("graph-2011-07-04.txt") #,"graph-2011-08-04.txt")
 migrator.connect
 migrator.migrate
+
 
 puts "\n==================================================="
 puts "=========== SUMMARY OF INITIAL SNAPSHOT ==========="
 puts "==================================================="
 puts "\nSize of users set: #{migrator.num_users(migrator.snapshot)}"
-puts "Members in users set:"
+#puts "Members in users set:"
 users = migrator.get_users(migrator.snapshot) # Gets users from the INITIAL snapshot
-puts users.inspect
+#puts users.inspect
 
+
+=begin
 puts "\n==================================================="
 puts "=========== DETAILS OF INITIAL SNAPSHOT ==========="
 puts "===================================================\n"
@@ -243,6 +246,7 @@ users.each do |uid|
 end
 
 
+
 puts "\n=============================================="
 puts "=============  SUMMARY OF DIFF ==============="
 puts "==============================================\n"
@@ -265,7 +269,7 @@ users.each do |uid|
   puts "\n==============================="
   puts ""
 end
-
+=end
 
 
 
@@ -273,6 +277,8 @@ end
 # It's like for every user, if it has another user in BOTH sets,
 # then check if it had the user in only ONE set previously, then that is
 # a mutual friend acceptance. "a, b" means edge a->b formed
+
+puts "PARSING FOR FOLLOWBACKS..."
 users.each do |uid|
   new_interests = migrator.new_interests(uid, migrator.snapshot, migrator.snapshot2)
   existing_interests = migrator.existing_interests(uid, migrator.snapshot, migrator.snapshot2)
@@ -281,7 +287,7 @@ users.each do |uid|
 
   new_interests.each do |ni|
     if existing_fans.include?(ni) # so b->a already existed
-      puts "ADDING NEW INTEREST FOLLOWBACK #{uid}, #{ni}"
+      #puts "ADDING NEW INTEREST FOLLOWBACK #{uid}, #{ni}"
       migrator.add_new_edge(migrator.snapshot, migrator.snapshot2, "#{uid}, #{ni}")
     end
   end
@@ -290,12 +296,17 @@ users.each do |uid|
   # so if you are a new fan here, that means you were a new interest elsewhere
   # HOWEVER: it is useful if we have missing data in the dataset, then this could
   # reveal new information, so it doesn't really hurt, unless it becomes really slow
+  
+  # NOTE: commented out this next loop to hopefully make it run faster...
+=begin
   new_fans.each do |nf|
     if existing_interests.include?(nf)
       puts "ADDING NEW FAN FOLLOWBACK #{nf}, #{uid}"
       migrator.add_new_edge(migrator.snapshot, migrator.snapshot2, "#{nf}, #{uid}")
     end
   end
+=end
+
 end
 
 
@@ -305,12 +316,6 @@ puts "============= FOLLOWBACKS SUMMARY ==============="
 puts "=================================================\n"
 puts "Number of new followbacks:"
 puts migrator.get_followbacks(migrator.snapshot, migrator.snapshot2).count
-puts "Array of followbacks in form 'a,b' for followback a->b"
-puts migrator.get_followbacks(migrator.snapshot, migrator.snapshot2).inspect
+#puts "Array of followbacks in form 'a,b' for followback a->b"
+#puts migrator.get_followbacks(migrator.snapshot, migrator.snapshot2).inspect
 
-
-# Skeleton code for what Brian could use
-#puts migrator.shared_interests(users[0], users[1]).inspect
-#puts migrator.combined_interests(users[0], users[1]).inspect
-#puts migrator.mutual_friends(users[0]).inspect
-#puts migrator.shared_mutual_friends(users[0], users[1]).inspect # should be 0
