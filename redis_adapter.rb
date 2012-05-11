@@ -196,7 +196,7 @@ class RedisAdapter
 end
 
 
-migrator = RedisAdapter.new("graph-2011-07-04.txt") #,"graph-2011-08-04.txt")
+migrator = RedisAdapter.new("graph-2011-07-04.txt" ,"graph-2011-07-11.txt")
 migrator.connect
 migrator.migrate
 
