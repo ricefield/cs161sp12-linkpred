@@ -24,11 +24,11 @@ def main():
         elif real in NEGATIVES and pred in NEGATIVES:
             false_neg += 1
     
-    acc = float(true_pos)/(true_pos + true_neg)
-    print "%f\tpercent of actual follow-backs predicted." % acc
-    acc2 = float(true_pos)/(true_pos + false_pos)
-    print "%f\tpercent of predicted follow-backs were correct." % acc2
-    acc3 = float(true_pos + false_neg)/(true_pos + false_pos + true_neg + false_neg)
-    print "%f\tpercent of all predictions were accurate." % acc3
+    soundness = float(true_pos)/(true_pos + true_neg)
+    print "%f\tpercent of actual follow-backs predicted." % soundness*100
+    completeness = float(true_pos)/(true_pos + false_pos)
+    print "%f\tpercent of predicted follow-backs were correct." % completeness*100
+    accuracy = float(true_pos + false_neg)/(true_pos + false_pos + true_neg + false_neg)
+    print "%f\tpercent of all predictions were accurate." % accuracy*100
     
 main()
