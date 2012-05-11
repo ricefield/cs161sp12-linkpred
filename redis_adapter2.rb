@@ -1,3 +1,10 @@
+# THIS FILE IS USED FOR PARALLEL DB DATA INSERTION.
+# FOR SMALL DATA, YOU ONLY NEED TO RUN REDIS_ADAPTER.RB
+# WITH TWO SNAPSHOT NAMES WHEN INITIALIZING RedisAdapter
+# i.e. RedisAdapter.new(snapshot1, snapshot2)
+# For parallel insertion, two simultaneous RedisAdapter instaces
+# are run, each with only one snapshot (i.e. RedisAdapter.new(snapshot1))
+
 require 'redis'
 
 # Data in the form:
