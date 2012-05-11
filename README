@@ -1,11 +1,26 @@
 Setup:
-- install redis DB
-- copy libsvm library to "/usr/libsvm/"
+- install redis DB, ruby, python (we used python 2.7.2)
+- for perceptron: install numpy for python
+- for libSVM: go to libsvm/python and run "make" [requires g++]
+- copy libsvm/ to "/usr/libsvm/"
 
 Running the pipeline:
-- run the redis database
-- migrate the files {"ruby redis_adaptor.rb"}
-- call the extractor file {./extractor.py [p/s [snapshot1 snapshot2 [output_name]]]}
-  - p/s is perceptron/SVM, snapshot1 is the first snapshot, snapshot2 is the second snapshot (omit the .txt), output_name is the prefix you want the output files to have
-- call the analysis files {./analyze_libsvm.py training_filename test_filename output_filename}
-- call the evalator file {./eval.py < data}
+1. run the Redis database
+>> redis-server
+2. migrate the files to Redis
+>> ruby redis_adapter.rb
+  - currently hard-coded to work on "graph-07-04-2011" and "graph-07-11-2011", must be changed inline for other snapshots
+3. run the extractor code
+>> ./extractor.py "snapshot1_name" "snapshot2_name" "output_prefix" [-v]
+  - note that this expects file names as strings, not the file itself. Omit the ".txt"
+  - output_name is the prefix you want to give your output files. The extractor appends _[train/test]_[s/p] to distinguish between training and testing sets, and between SVM and perceptron format
+  - this takes a long time, and the optional -v flag prints the number of edges extracted
+4a. run the analysis code for libSVM
+>> ./analyze_libsvm.py "training_filename" "test_filename" "output_filename"
+  - again, this expects file names as strings, and not the file itself as an argument
+  - the output files from analyze_libsvm are of the format used for libsvm here
+4b. run the analysis code for perceptron
+>> python perceptron_test.py
+5. run the evalation file
+>> ./eval.py < data
+  - "data" is the output file of either the perceptron or libSVM code, and here is the actual file
