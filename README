@@ -21,6 +21,7 @@ Running the pipeline:
   - the output files from analyze_libsvm are of the format used for libsvm here
 4b. run the analysis code for perceptron
 >> python perceptron_test.py
+  - may require you to first go to the python-perceptron folder, as well as moving the training and testing files to the python-perceptron/data folder
 5. run the evalation file
 >> ./eval.py < data
   - "data" is the output file of either the perceptron or libSVM code, and here is the actual file
